@@ -1,8 +1,16 @@
 # Domain and public deployment
 
-`zenithsmart.xin` is supplied by the owner. On 2026-10-30 it returned an existing Vercel site titled `SunnyGuard AI ☀️`. Noah has not replaced that site or changed its DNS.
+`https://zenithsmart.xin/` now serves Noah through the owner's Cloudflare static-assets project `noah-ai`. The independent deployment URL is `https://noah-ai.xiao85651.workers.dev/`. Dashboard release `5c13eb92` was Ready at 100%. Both origins were checked over HTTPS: the 325-step browser model and binary checksum match the local accepted release.
 
-The proposed production split is:
+The root-only Worker route is `zenithsmart.xin/*`; the root DNS record is proxied through Cloudflare. Its previous A-record target is retained for recovery. No wildcard subdomain route is in use. Other subdomain records remain outside this deployment. Original root and www records are documented in `deploy/domain-backup.json`.
+
+The site is static: model computation runs in a visitor's browser Web Worker. It has no public administration API, Python runtime or external model API. The weights are public downloadable assets while the GitHub source repository remains private. This is a tiny research model and its output can be incoherent.
+
+To restore the prior apex site, remove the exact Noah root route and return the existing root record's proxy status to DNS-only. Its original address is recorded in the backup. This is a manual hosting recovery operation, separate from model-serving rollback.
+
+For a later frontend/weight update, export an accepted release as documented in `EVOLUTION.md`, run the browser/PyTorch comparison and build, then upload the resulting `dist/` files as a new version of the existing `noah-ai` Worker. The public site is not automatically redeployed by local model iterations.
+
+The optional persistent-server deployment split is:
 
 - `zenithsmart.xin` or a chosen subdomain: public multilingual chat frontend.
 - `training/gateway.py` on loopback port 4319: a separately operated inference gateway, using only Noah's own published weights, one inference slot, request limits and a small rate budget.
@@ -11,7 +19,7 @@ The proposed production split is:
 
 The browser app on port 4317 is an administrator prototype. Its training buttons can start local worker processes, and its session token is available to the same-machine frontend. It must not be reverse-proxied wholesale to a public hostname. `PublicChat.cmd` starts the distinct public-facing preview on port 4319; it has no admin routes and does not train or save chats.
 
-The supplied Caddy configuration proposes `chat.zenithsmart.xin` for public chat and `compute.zenithsmart.xin` for invited contribution. It does not provision a domain, purchase hosting or launch a globally available free AI. GitHub hosts source, issues and releases; the training coordinator and inference need actual running machines. The owner currently has a domain but no server.
+The supplied Caddy configuration proposes `chat.zenithsmart.xin` for public chat and `compute.zenithsmart.xin` for invited contribution. It does not provision a domain, purchase hosting or launch a globally available free AI. GitHub hosts source, issues and releases; the training coordinator and inference need actual running machines. The owner currently has no separate training server. Browser-local inference provides the public preview without one; internet contributor scheduling still needs a persistent coordinator.
 
 ## Rehearse locally
 

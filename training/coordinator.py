@@ -6,6 +6,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import base64, copy, hashlib, json, math, os, random, secrets, signal, subprocess, sys, threading, time, uuid
 import torch
 from .model import Config, Noah, encode, make_batch, pack_tensors, parameters, unpack_tensors, set_parameters
+from .evolution import Evolution
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -56,6 +57,7 @@ class Coordinator:
         self.nodes, self.credentials, self.jobs, self.events = {}, {}, {}, []
         self.random = random.Random(2026)
         self.event('Noah coordinator ready. Training is paused.')
+        self.evolution = Evolution(self)
 
     def event(self, text):
         self.events.insert(0, {'time': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()), 'message': text})
@@ -79,7 +81,7 @@ class Coordinator:
         (self.data / 'model-card.json').write_text(json.dumps({'name':'Noah', 'architecture':'causal decoder-only Transformer', 'initialization':'random, seed 17; no pretrained weights', 'parameters':sum(p.numel() for p in self.model.parameters()), 'step':self.step, 'validationLoss':self.loss, 'initialValidationLoss':self.initial_loss, 'tokenizer':'UTF-8 bytes + BOS/EOS/PAD', 'dataLanguages':self.languages, 'corpusSHA256':self.corpus_hash, 'capability':'early research; multilingual encoding is not evidence of multilingual proficiency'}, ensure_ascii=False, indent=2), encoding='utf-8')
 
     def status(self):
-        return {'name':'Noah', 'scope':'local-admin', 'backend':'transformer', 'training':self.active, 'duty':self.duty, 'managedWorker':self.worker is not None and self.worker.poll() is None, 'model':{'name':'Noah', 'stage':'Seed', 'type':'causal Transformer', 'step':self.step, 'parameters':sum(p.numel() for p in self.model.parameters()), 'vocab':259, 'validationLoss':self.loss, 'initialLoss':self.initial_loss, 'trainCharacters':len(self.train_ids), 'validationCharacters':sum(map(len,self.validation_docs)), 'accepted':self.step, 'languages':self.languages}, 'nodes':[{**n, 'online':time.time()*1000-n['lastSeen']<15000} for n in self.nodes.values()], 'history':self.history[-200:], 'events':self.events}
+        return {'name':'Noah', 'scope':'local-admin', 'backend':'transformer', 'training':self.active, 'duty':self.duty, 'managedWorker':self.worker is not None and self.worker.poll() is None, 'model':{'name':'Noah', 'stage':'Seed', 'type':'causal Transformer', 'step':self.step, 'parameters':sum(p.numel() for p in self.model.parameters()), 'vocab':259, 'validationLoss':self.loss, 'initialLoss':self.initial_loss, 'trainCharacters':len(self.train_ids), 'validationCharacters':sum(map(len,self.validation_docs)), 'accepted':self.step, 'languages':self.languages}, 'nodes':[{**n, 'online':time.time()*1000-n['lastSeen']<15000} for n in self.nodes.values()], 'history':self.history[-200:], 'events':self.events, 'evolution':self.evolution.status()}
 
     def stop_worker(self):
         if self.worker and self.worker.poll() is None:
@@ -107,8 +109,16 @@ class Coordinator:
             permitted = secrets.compare_digest(credential,self.token) or (path in node_routes and not path.endswith('/join') and bool(credential) and self.credentials.get(body.get('id')) == credential)
         if not permitted: raise PermissionError('Unauthorized')
         with self.lock:
+            if path == '/api/evolution':
+                action=body.get('action')
+                if action=='start': self.evolution.start(body,port)
+                elif action=='pause': self.evolution.pause()
+                elif action=='rollback': self.evolution.rollback()
+                else: raise ValueError('Unknown iteration action')
+                return self.evolution.status()
             if path == '/api/training':
                 if not isinstance(body.get('active'), bool): raise ValueError('Invalid training state')
+                if not body['active']: self.evolution.pause()
                 self.active = body['active']
                 if type(body.get('duty')) is int and 5 <= body['duty'] <= 50: self.duty = body['duty']
                 self.event('Training opened.' if self.active else 'Training paused.')
@@ -118,7 +128,9 @@ class Coordinator:
                 if body.get('start'):
                     if body.get('consent') is not True: raise ValueError('Explicit consent required')
                     self.start_worker(port)
-                else: self.stop_worker()
+                else:
+                    self.evolution.pause()
+                    self.stop_worker()
                 return {'ok':True}
             if path == '/api/nodes/join':
                 if len(self.nodes) >= 100: raise ValueError('Node limit reached')
@@ -171,6 +183,10 @@ class Coordinator:
                 node['batches'] += 1
                 node['computeMs'] += min(120000,max(0,float(body.get('duration',0))))
                 if self.step % 5 == 0: self.save()
+                try: self.evolution.observe()
+                except Exception as error:
+                    self.evolution.error=str(error)
+                    self.evolution.pause('error')
                 return {'accepted':True,'step':self.step,'validationLoss':self.loss}
             if path in {'/api/sample','/api/chat'}:
                 prompt = str(body.get('prompt',''))[:600]
@@ -233,6 +249,15 @@ def main():
             except PermissionError as error: self.send(403,{'error':str(error)})
             except Exception as error: self.send(400,{'error':str(error)})
     server=ThreadingHTTPServer(('127.0.0.1',port),Handler)
+    stopped=threading.Event()
+    def iteration_clock():
+        while not stopped.wait(1):
+            with coordinator.lock:
+                try: coordinator.evolution.tick()
+                except Exception as error:
+                    coordinator.evolution.error=str(error)
+                    coordinator.evolution.pause('error')
+    threading.Thread(target=iteration_clock,daemon=True).start()
     if public_port:
         ingress=ThreadingHTTPServer(('127.0.0.1',public_port),Handler)
         threading.Thread(target=ingress.serve_forever,daemon=True).start()
@@ -240,6 +265,7 @@ def main():
     try: server.serve_forever()
     except KeyboardInterrupt: pass
     finally:
+        stopped.set()
         with coordinator.lock:
             coordinator.active=False; coordinator.stop_worker(); coordinator.save()
         server.server_close()

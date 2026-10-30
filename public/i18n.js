@@ -1,5 +1,23 @@
 export const locales=['zh','en','ja','es','ar'];
 const rows={
+evolve:["自动迭代", "Model iteration", "自動反復", "Iteración", "التطوير التلقائي"],
+evolveTitle:["让每次升级都有依据", "Measured model upgrades", "根拠のあるモデル更新", "Mejoras medidas del modelo", "ترقيات نموذج قابلة للقياس"],
+evolveSubtitle:["训练候选版本，比较评估结果，通过后发布，并保留历史版本。", "Train candidates, compare evaluations, publish passing versions and preserve history.", "候補を学習・評価し、合格した版を公開して履歴を保存します。", "Entrena candidatos, compara evaluaciones, publica versiones aprobadas y conserva el historial.", "تدريب مرشحين ومقارنة التقييمات ونشر النسخ المقبولة مع حفظ السجل."],
+evolvePolicy:["每次最多 75 个训练步或 30 分钟，每 25 步评估一次。使用现有授权语料，设备 CPU 目标占空比沿用贡献设置。", "Up to 75 training steps or 30 minutes per session; evaluate every 25 steps. Uses the existing authorized corpus and contributor CPU duty setting.", "1回75ステップまたは30分まで、25ステップごとに評価。既存の許諾済みデータとCPU設定を使用します。", "Hasta 75 pasos o 30 minutos por sesión; evalúa cada 25 pasos. Usa el corpus autorizado y la configuración de CPU.", "حتى 75 خطوة أو 30 دقيقة للجلسة، مع تقييم كل 25 خطوة. يستخدم البيانات المصرح بها وإعداد المعالج."],
+evolveConsent:["我自愿使用这台电脑的 CPU 运行上述有上限的自动迭代。", "I volunteer this computer’s CPU for the bounded iteration session above.", "この上限付き反復に自分のCPUを提供します。", "Ofrezco la CPU de este equipo para esta sesión limitada.", "أوافق على المساهمة بمعالج هذا الجهاز للجلسة المحدودة أعلاه."],
+evolveStart:["启动自动迭代", "Start iteration", "反復を開始", "Iniciar iteración", "بدء التطوير"],
+evolvePause:["停止本轮迭代", "Stop this session", "今回の反復を停止", "Detener sesión", "إيقاف الجلسة"],
+evolveRollback:["回滚发布版本", "Roll back serving version", "公開版を戻す", "Revertir versión publicada", "استعادة النسخة السابقة"],
+evolveRelease:["当前发布版本", "Current serving version", "現在の公開版", "Versión publicada", "النسخة المنشورة"],
+evolveProgress:["本轮训练步数", "Steps this session", "今回のステップ数", "Pasos de esta sesión", "خطوات هذه الجلسة"],
+evolveHistory:["候选版本与评估记录", "Candidates and evaluations", "候補と評価履歴", "Candidatos y evaluaciones", "المرشحون والتقييمات"],
+evolveEmpty:["启动后显示真实的版本和评估记录。", "Real version and evaluation records appear after starting.", "開始後に実際の版と評価記録を表示します。", "Los registros reales aparecen al iniciar.", "تظهر سجلات النسخ والتقييم الحقيقية بعد البدء."],
+evolveRunning:["正在自动迭代", "Iteration active", "反復中", "Iteración activa", "التطوير نشط"],
+evolveStopped:["已停止或达到预算", "Stopped or budget reached", "停止中・上限到達", "Detenida o límite alcanzado", "متوقف أو بلغ الحد"],
+evolveAccepted:["已发布", "Published", "公開済み", "Publicada", "منشورة"],
+evolveRejected:["候选未发布", "Candidate not published", "候補は未公開", "Candidato sin publicar", "لم ينشر المرشح"],
+evolveNote:["仅有评估改善才能升级。小样本分数改善不代表通用智能；新增知识仍需要高质量授权数据。", "Only measured improvements are promoted. Tiny-sample scores do not establish general intelligence; new knowledge needs quality authorized data.", "評価改善時のみ更新します。小標本の改善は汎用知能を示さず、新知識には良質な許諾データが必要です。", "Solo se publican mejoras medidas. Una muestra pequeña no demuestra inteligencia general; se necesitan datos autorizados de calidad.", "تنشر التحسينات المقاسة فقط. نتائج العينات الصغيرة لا تثبت ذكاء عاما، والمعرفة الجديدة تحتاج بيانات جيدة ومصرحا بها."],
+
 companionHello:["你好。准备好时，我们就开始。","Hello. Ready when you are.","こんにちは。準備ができたら始めましょう。","Hola. Lista cuando tú quieras.","مرحبا، مستعدة عندما تكون جاهزا."],
 companionThinking:["正在生成","Generating","生成中","Generando","جار التوليد"],
 companionIdle:["待命中","Standing by","待機中","En espera","في الانتظار"],

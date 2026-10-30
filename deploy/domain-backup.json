@@ -1,0 +1,10 @@
+{
+  "domain": "zenithsmart.xin",
+  "observedBeforeNoahBinding": "2026-10-31",
+  "nameservers": ["sonia.ns.cloudflare.com", "javon.ns.cloudflare.com"],
+  "previousRecords": [
+    {"type":"A","name":"@","content":"216.198.79.1","proxied":false,"ttl":"Auto"},
+    {"type":"CNAME","name":"www","content":"cname-china.vercel-dns.com","proxied":false,"ttl":"Auto"}
+  ],
+  "note": "Restore only the hostname being rolled back after removing the corresponding Noah custom-domain binding. Other subdomain records are outside this change."
+}

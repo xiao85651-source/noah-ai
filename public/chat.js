@@ -1,4 +1,5 @@
 import {translations,locales} from './i18n.js';
+import {infer} from './transport.js';
 const $=s=>document.querySelector(s);
 let language='zh',busy=false,paused=false;
 try{language=localStorage.getItem('noah-language')||'zh';paused=localStorage.getItem('noah-companion-paused')==='1';}catch{}
@@ -19,10 +20,8 @@ async function send(){
  busy=true;$('#send').disabled=true;$('#welcome').hidden=true;$('#prompt').value='';message('user',text);
  const pending=message('assistant',t('generating'));$('#companion-status').textContent=t('companionThinking');
  try{
-  const response=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:text}],language}),signal:AbortSignal.timeout(30000)});
-  if(!response.ok)throw Error(response.status===429?errors[language][0]:response.status===503?errors[language][1]:t('connectionError'));
-  const result=await response.json();pending.lastChild.textContent=result.text;
- }catch(error){pending.lastChild.textContent=error.name==='TimeoutError'?t('connectionError'):error.message;pending.classList.add('error');}
+  const result=await infer(text,language);pending.lastChild.textContent=result.text;
+ }catch(error){pending.lastChild.textContent=error.status===429?errors[language][0]:error.status===503?errors[language][1]:t('connectionError');pending.classList.add('error');}
  finally{busy=false;$('#send').disabled=false;$('#companion-status').textContent=t('companionIdle');}
 }
 $('#chat-form').addEventListener('submit',event=>{event.preventDefault();send();});

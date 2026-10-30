@@ -13,3 +13,5 @@ node_modules/
 *.pt
 *.pth
 .DS_Store
+dist/
+.vercel/
