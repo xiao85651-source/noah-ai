@@ -1,0 +1,20 @@
+{
+  "name": "Noah",
+  "architecture": "causal Transformer",
+  "parameters": 644608,
+  "stepsThisRun": 100,
+  "totalSteps": 100,
+  "initialValidationLossThisRun": 5.583238983154297,
+  "finalValidationLoss": 3.1773824214935305,
+  "elapsedSeconds": 1.39,
+  "pretrainedWeightsUsed": false,
+  "languages": [
+    "ar",
+    "en",
+    "es",
+    "ja",
+    "zh"
+  ],
+  "deviceTested": "cpu",
+  "scope": "local authored seed corpus; not a capable assistant"
+}

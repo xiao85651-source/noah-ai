@@ -1,0 +1,65 @@
+{
+  "format": "noah-seed-v1",
+  "name": "Noah",
+  "config": {
+    "context": 128,
+    "width": 128,
+    "heads": 4,
+    "layers": 3,
+    "vocab": 259
+  },
+  "step": 100,
+  "corpus_hash": "543bf4a8df036f7f34be2e649e0187dd7682b44db787feb98e8eed83b628cd06",
+  "sha256": "209f8fae53f666007221d8ef9a8ff16fe6aa31eaca2125011b3bb5661baee6a5",
+  "parameters": 644608,
+  "validationLoss": 3.1773824214935305,
+  "history": [
+    {
+      "step": 0,
+      "loss": 5.583238983154297
+    },
+    {
+      "step": 10,
+      "loss": 4.822984600067139
+    },
+    {
+      "step": 20,
+      "loss": 4.448214054107666
+    },
+    {
+      "step": 30,
+      "loss": 4.150911569595337
+    },
+    {
+      "step": 40,
+      "loss": 3.979567527770996
+    },
+    {
+      "step": 50,
+      "loss": 3.8413530349731446
+    },
+    {
+      "step": 60,
+      "loss": 3.6628943920135497
+    },
+    {
+      "step": 70,
+      "loss": 3.515252208709717
+    },
+    {
+      "step": 80,
+      "loss": 3.458852195739746
+    },
+    {
+      "step": 90,
+      "loss": 3.3255343437194824
+    },
+    {
+      "step": 100,
+      "loss": 3.1773824214935305
+    }
+  ],
+  "pretrainedWeightsUsed": false,
+  "source": "Noah project own training run; not an external base model",
+  "capability": "Seed research checkpoint; not a reliable assistant"
+}

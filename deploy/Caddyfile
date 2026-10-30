@@ -1,0 +1,7 @@
+# Proposed hostname only; requires the owner's DNS, server and valid TLS.
+compute.zenithsmart.xin {
+    request_body {
+        max_size 24MB
+    }
+    reverse_proxy 127.0.0.1:4318
+}

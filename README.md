@@ -1,2 +1,95 @@
-# noah-ai
-Noah: independently initialized AI model, multilingual research and voluntary compute collaboration.
+# Noah 诺亚
+
+**A model of our own, trained from random weights through voluntary compute.**
+
+Noah is an early research project owned and maintained under this repository. Its model is an independently implemented, conventional decoder-only Transformer. Its seed weights are trained by this project from random initialization. The runtime does not call another model provider or download a third-party pretrained base model.
+
+Noah 的目标是：训练真正属于本项目的模型，让贡献者自愿提供 CPU/GPU 算力，逐步形成面向所有人的免费 AI 服务。
+
+**当前状态：能运行的研究工程，不是成熟助手。** 已实现自有模型、CPU 训练、志愿客户端、受邀接入、真实梯度回传、权重保存和导出。尚未部署全球网络，也未达到可靠多语言问答能力。
+
+## Quick start / 启动
+
+Windows with Python 3.12:
+
+1. Run `Setup.cmd` once to create a project-local environment and install official CPU PyTorch and NumPy.
+2. Run `Start.cmd`; open <http://127.0.0.1:4317>.
+3. Under **Contribute compute / 贡献算力**, read the resource notice, volunteer this device and start training.
+4. Pause training or stop contribution whenever you want. No computation starts automatically on app launch.
+
+On any supported Python environment:
+
+```sh
+python -m venv .venv
+# Activate .venv using the command appropriate to your operating system.
+python -m pip install torch==2.15.0 --index-url https://download.pytorch.org/whl/cpu
+python -m pip install 'numpy>=2.0,<3'
+python -m training.coordinator
+```
+
+The volunteer client is `python -m training.worker --device cpu`. It requires typing `JOIN`. Windows users can also run `Contribute.cmd`.
+
+GPU contribution is implemented through `--device cuda`, but was **not GPU-tested** on the development laptop. GPU contributors must independently install the matching official CUDA-enabled PyTorch build using the [PyTorch installer](https://pytorch.org/get-started/locally/). CPU is the default; the local web button does not enable GPU use.
+
+## What is actually ours? / 自有模型
+
+| Component | Implementation |
+| --- | --- |
+| Model | `training/model.py`, causal decoder-only Transformer, pre-layer normalization, tied embeddings |
+| Seed size | 644,608 parameters, 3 layers, width 128, 4 attention heads, context 128 |
+| Tokenizer | UTF-8 bytes plus three special tokens; no downloaded tokenizer |
+| Initialization | Random weights, seed 17 |
+| Corpus | Original project-authored seed text in Chinese, English, Japanese, Spanish and Arabic |
+| Training | AdamW, next-token prediction, gradient clipping; local and contributor modes |
+| Checkpoints | Project's own trained parameters, optimizer and corpus hash stored locally |
+
+Using PyTorch and standard Transformer techniques does not make the architecture a new research invention. “Own model” means our implemented training system and our independently trained weights, with provenance recorded.
+
+## Current measured result
+
+The default seed completed 100 real CPU training steps. Held-out byte-level cross entropy decreased from **5.5832 to 3.1774**. Data is extremely small and shares a subject across languages, so this is an engineering verification, not evidence of general intelligence or multilingual proficiency.
+
+`checkpoints/noah-seed.npz` and its JSON model card, when included, contain this project's own seed weights, without the optimizer or local logs. The coordinator validates SHA-256 before loading them. If the seed file is absent, the model initializes randomly and remains usable for training experiments.
+
+To reproduce a completely fresh run, choose a new data directory so prior work is preserved:
+
+```powershell
+$env:NOAH_FRESH = '1'
+$env:NOAH_DATA = '.\data\my-fresh-run'
+python -m training.train --steps 100 --device cpu
+```
+
+Remove `NOAH_FRESH` before opening a previously saved run. `python -m training.train --steps 100` continues from this project's local or included Noah weights; it never imports external pretrained weights.
+
+## Multilingual interface
+
+Chinese, English, Japanese, Spanish and Arabic are fully selectable. Arabic uses right-to-left layout. Model text input supports all Unicode through UTF-8 encoding. This does **not** establish that the current seed can answer in these languages. Raw output can be incoherent or contain replacement characters.
+
+## Voluntary contribution / 算力贡献
+
+Clients receive tensors and public training tokens, run only installed training code, and return gradients. Tasks never carry executable Python or shell code. Clients default to one CPU thread and insert pauses between batches. Target duty cycle is an approximation, not an operating-system CPU limit. Idle, thermal and battery detection are not implemented. Participation consumes electricity, generates heat and uses network bandwidth.
+
+The coordinator issues per-node credentials, checks tensor names/shapes/types/finiteness, clips gradients, rejects duplicate or stale jobs and uses a validation-loss guard. These checks are **not adversarial Byzantine resilience**. Keep the current protocol limited to trusted invited testers.
+
+See [REMOTE.md](REMOTE.md) for HTTPS contribution setup, [CONTRIBUTING.md](CONTRIBUTING.md) for the collaboration process, and [MODEL_CARD.md](MODEL_CARD.md) for capabilities and limits.
+
+## Domain and deployment
+
+Planned project domain: **zenithsmart.xin**. It currently hosts an existing Vercel site, which this project has not overwritten. The current web app is a **local administrator console**; do not publish it as an unauthenticated public service. Public chat needs a separate gateway, rate limits and access controls. See [DEPLOYMENT.md](DEPLOYMENT.md).
+
+The repository remains private as requested until testing and a later decision to publish. No global volunteers or free public inference service are claimed to exist yet.
+
+## Tests
+
+```sh
+python -m unittest training.test_training -v
+node --test tests/*.test.mjs
+```
+
+Checks cover causal attention, multilingual tokenizer round trips, tensor transport, real contributor gradients, ownership of node credentials, pause/replay rejection, checkpoint reload, the historical MLP baseline and translation completeness.
+
+The root JavaScript model/server is the historical MLP experiment, retained for reproducibility. The default app and current model use `training/coordinator.py` and the Transformer. No local data, credentials, logs, virtual environments or optimizer checkpoints are committed.
+
+## Ownership and release
+
+This is the repository owner's project. The current private snapshot does not select a public source or model license. Before a public release, the owner should choose source/weight licenses and a contributor agreement compatible with the intended free service. Free user access, open-source licensing and ownership are separate decisions.

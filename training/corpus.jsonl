@@ -1,0 +1,10 @@
+{"language":"zh","split":"train","text":"Noah 是一个从零训练的语言模型项目。贡献者可以自愿提供设备算力，并且随时暂停或退出。模型通过预测下一个文本单位进行学习。我们记录训练配置与评估结果，并明确区分研究实验和成熟服务。"}
+{"language":"en","split":"train","text":"Noah is an independently trained language model project. Volunteers may contribute computing resources and leave whenever they choose. The model learns by predicting the next token. We record training settings and evaluation results, and distinguish research experiments from reliable services."}
+{"language":"ja","split":"train","text":"Noah はゼロから学習する言語モデルのプロジェクトです。参加者は自分の意思で計算資源を提供し、いつでも停止できます。モデルは次のトークンを予測して学習します。実験の結果と限界を正直に記録します。"}
+{"language":"es","split":"train","text":"Noah es un proyecto de modelo de lenguaje entrenado desde cero. Las personas pueden aportar recursos de forma voluntaria y detener su participación cuando quieran. El modelo aprende a predecir el siguiente token. Los resultados y las limitaciones deben comunicarse con claridad."}
+{"language":"ar","split":"train","text":"نوح مشروع نموذج لغوي يتم تدريبه من البداية. يساهم المشاركون بموارد الحوسبة طوعا ويمكنهم التوقف في أي وقت. يتعلم النموذج توقع الرمز التالي. نسجل إعدادات التدريب ونتائج التقييم ونوضح حدود التجربة بصدق."}
+{"language":"zh","split":"validation","text":"训练会修改模型参数，推理会使用已有参数。测试数据需要独立保存。闲置设备仍然消耗电力与带宽，免费开放需要持续维护与支持。"}
+{"language":"en","split":"validation","text":"Training changes model parameters. Inference uses the parameters already learned. Evaluation data must remain separate. Idle hardware still consumes electricity and bandwidth, so public access requires continued support."}
+{"language":"ja","split":"validation","text":"学習はパラメータを更新し、推論は学習した値を利用します。評価用のデータは学習から分離します。公開サービスには継続的な保守が必要です。"}
+{"language":"es","split":"validation","text":"El entrenamiento actualiza los parámetros y la inferencia los utiliza. Los datos de evaluación se mantienen separados. Un servicio gratuito necesita energía, mantenimiento y apoyo continuo."}
+{"language":"ar","split":"validation","text":"يحدث التدريب معلمات النموذج ويستخدمها الاستدلال. يجب فصل بيانات التقييم عن بيانات التدريب. تحتاج الخدمة المجانية إلى الطاقة والصيانة والدعم المستمر."}
