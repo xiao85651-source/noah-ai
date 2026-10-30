@@ -19,6 +19,8 @@ Windows with Python 3.12:
 
 Run `Check.cmd` for a self-contained end-to-end check. It launches isolated coordinator and contributor processes, submits real gradients through HTTP, generates text, exports weights and verifies recovery after restart. It does not modify your normal `data/` directory. See [TEST_REPORT.md](TEST_REPORT.md) for the verified scope.
 
+Run `PublicChat.cmd` for the separate public-chat preview at <http://127.0.0.1:4319>. It loads only the published Noah seed weights by default and exposes no training, worker, session-token or weight-export APIs. It has one inference slot, request limits and a small per-address request budget. This remains a local preview until a persistent server, HTTPS and DNS are configured.
+
 On any supported Python environment:
 
 ```sh
@@ -77,14 +79,14 @@ See [REMOTE.md](REMOTE.md) for HTTPS contribution setup, [CONTRIBUTING.md](CONTR
 
 ## Domain and deployment
 
-Planned project domain: **zenithsmart.xin**. It currently hosts an existing Vercel site, which this project has not overwritten. The current web app is a **local administrator console**; do not publish it as an unauthenticated public service. Public chat needs a separate gateway, rate limits and access controls. See [DEPLOYMENT.md](DEPLOYMENT.md).
+Planned project domain: **zenithsmart.xin**. It currently hosts an existing Vercel site, which this project has not overwritten. Port 4317 is the **local administrator console** and must stay private. The separate `training/gateway.py` public-chat process on port 4319 is implemented and locally tested. Before exposing it, configure HTTPS, edge limits and a persistent machine; see [DEPLOYMENT.md](DEPLOYMENT.md).
 
 The repository remains private as requested until testing and a later decision to publish. No global volunteers or free public inference service are claimed to exist yet.
 
 ## Tests
 
 ```sh
-python -m unittest training.test_training training.test_http -v
+python -m unittest training.test_training training.test_http training.test_gateway -v
 node --test tests/*.test.mjs
 ```
 

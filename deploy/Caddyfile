@@ -1,4 +1,11 @@
 # Proposed hostname only; requires the owner's DNS, server and valid TLS.
+chat.zenithsmart.xin {
+    request_body {
+        max_size 8KB
+    }
+    reverse_proxy 127.0.0.1:4319
+}
+
 compute.zenithsmart.xin {
     request_body {
         max_size 24MB
