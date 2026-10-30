@@ -17,6 +17,8 @@ Windows with Python 3.12:
 3. Under **Contribute compute / 贡献算力**, read the resource notice, volunteer this device and start training.
 4. Pause training or stop contribution whenever you want. No computation starts automatically on app launch.
 
+Run `Check.cmd` for a self-contained end-to-end check. It launches isolated coordinator and contributor processes, submits real gradients through HTTP, generates text, exports weights and verifies recovery after restart. It does not modify your normal `data/` directory. See [TEST_REPORT.md](TEST_REPORT.md) for the verified scope.
+
 On any supported Python environment:
 
 ```sh
@@ -82,11 +84,13 @@ The repository remains private as requested until testing and a later decision t
 ## Tests
 
 ```sh
-python -m unittest training.test_training -v
+python -m unittest training.test_training training.test_http -v
 node --test tests/*.test.mjs
 ```
 
 Checks cover causal attention, multilingual tokenizer round trips, tensor transport, real contributor gradients, ownership of node credentials, pause/replay rejection, checkpoint reload, the historical MLP baseline and translation completeness.
+
+The interface uses a restrained cream workspace and an optional illustrated companion. See [assets/COMPANION.md](assets/COMPANION.md) for the generation brief, asset provenance and animation scope.
 
 The root JavaScript model/server is the historical MLP experiment, retained for reproducibility. The default app and current model use `training/coordinator.py` and the Transformer. No local data, credentials, logs, virtual environments or optimizer checkpoints are committed.
 

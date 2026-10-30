@@ -39,8 +39,8 @@ const handler=async(req,res)=>{
    if(path==='/api/session')return json(res,200,{token});
    if(path==='/api/status')return json(res,200,status());
    if(path==='/api/model/export'){res.setHeader('Content-Disposition','attachment; filename="noah-tiny-checkpoint.json"');return json(res,200,model);}
-   const files={'/':'index.html','/app.js':'app.js','/i18n.js':'i18n.js','/mascot.svg':'mascot.svg','/style.css':'style.css'};if(!files[path])return json(res,404,{error:'Not found'});
-   res.writeHead(200,{'Content-Type':path.endsWith('.js')?'text/javascript; charset=utf-8':path.endsWith('.css')?'text/css; charset=utf-8':path.endsWith('.svg')?'image/svg+xml':'text/html; charset=utf-8','X-Content-Type-Options':'nosniff','Content-Security-Policy':"default-src 'self'; connect-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; frame-ancestors 'none'"});return res.end(readFileSync(join(root,'public',files[path])));
+   const files={'/':'index.html','/app.js':'app.js','/i18n.js':'i18n.js','/mascot.svg':'mascot.svg','/mark.svg':'mark.svg','/companion.png':'companion.png','/style.css':'style.css'};if(!files[path])return json(res,404,{error:'Not found'});
+   res.writeHead(200,{'Content-Type':path.endsWith('.js')?'text/javascript; charset=utf-8':path.endsWith('.css')?'text/css; charset=utf-8':path.endsWith('.svg')?'image/svg+xml':path.endsWith('.png')?'image/png':'text/html; charset=utf-8','X-Content-Type-Options':'nosniff','Content-Security-Policy':"default-src 'self'; connect-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; frame-ancestors 'none'"});return res.end(readFileSync(join(root,'public',files[path])));
   }
   if(req.method!=='POST')return json(res,405,{error:'Method not allowed'});
   const b=await body(req);

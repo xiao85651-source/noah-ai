@@ -215,7 +215,7 @@ def main():
                     if self.path=='/api/model/export':
                         coordinator.save()
                         return self.send(200,coordinator.checkpoint.read_bytes(),'application/octet-stream')
-                files={'/':('index.html','text/html'),'/app.js':('app.js','text/javascript'),'/i18n.js':('i18n.js','text/javascript'),'/style.css':('style.css','text/css'),'/mascot.svg':('mascot.svg','image/svg+xml')}
+                files={'/':('index.html','text/html'),'/app.js':('app.js','text/javascript'),'/i18n.js':('i18n.js','text/javascript'),'/style.css':('style.css','text/css'),'/mascot.svg':('mascot.svg','image/svg+xml'),'/mark.svg':('mark.svg','image/svg+xml'),'/companion.png':('companion.png','image/png')}
                 if self.path not in files: return self.send(404,{'error':'Not found'})
                 filename,mime=files[self.path]
                 return self.send(200,(ROOT/'public'/filename).read_bytes(),mime+'; charset=utf-8')
