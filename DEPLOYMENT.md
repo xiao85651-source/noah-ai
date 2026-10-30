@@ -1,6 +1,8 @@
 # Domain and public deployment
 
-`https://zenithsmart.xin/` now serves Noah through the owner's Cloudflare static-assets project `noah-ai`. The independent deployment URL is `https://noah-ai.xiao85651.workers.dev/`. Dashboard release `5c13eb92` was Ready at 100%. Both origins were checked over HTTPS: the 325-step browser model and binary checksum match the local accepted release.
+`https://zenithsmart.xin/` serves Noah through the owner's Cloudflare static-assets project `noah-ai-web`. The independent deployment URL is `https://noah-ai-web.xiao85651.workers.dev/`. Dashboard release `4b98ab0b` was Ready at 100%. Both origins were checked over HTTPS against the built homepage, training portal, portal code/styles, translations and model manifest. The published model remains the accepted 325-step release. The original `noah-ai` project and its `5c13eb92` release are retained as a hosting rollback option at `https://noah-ai.xiao85651.workers.dev/`.
+
+The homepage links to `/train.html` (Cloudflare redirects this to `/train`). This public contributor portal shows actual published model metadata and explicitly marks the public coordinator as not deployed. Public online-node counts are unavailable, not fabricated. Its loopback console link opens a service on the visitor's own computer; it cannot remotely administer the owner's computer. The actual owner's training UI is `http://127.0.0.1:4317/#network` after starting `Start.cmd`, with iteration under `#evolve`.
 
 The root-only Worker route is `zenithsmart.xin/*`; the root DNS record is proxied through Cloudflare. Its previous A-record target is retained for recovery. No wildcard subdomain route is in use. Other subdomain records remain outside this deployment. Original root and www records are documented in `deploy/domain-backup.json`.
 
@@ -8,7 +10,7 @@ The site is static: model computation runs in a visitor's browser Web Worker. It
 
 To restore the prior apex site, remove the exact Noah root route and return the existing root record's proxy status to DNS-only. Its original address is recorded in the backup. This is a manual hosting recovery operation, separate from model-serving rollback.
 
-For a later frontend/weight update, export an accepted release as documented in `EVOLUTION.md`, run the browser/PyTorch comparison and build, then upload the resulting `dist/` files as a new version of the existing `noah-ai` Worker. The public site is not automatically redeployed by local model iterations.
+For a later frontend/weight update, export an accepted release as documented in `EVOLUTION.md`, run the browser/PyTorch comparison and build, then publish `dist/` through an authenticated Wrangler deployment or an available static-upload workflow. If using a new static Worker, verify its independent origin before changing the exact existing root route to that Worker; retain the previous Worker for rollback. The current dashboard static-upload flow created `noah-ai-web`, and the existing root route was reassigned to it after its independent-origin checks passed. The public site is not automatically redeployed by local model iterations.
 
 The optional persistent-server deployment split is:
 

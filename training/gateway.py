@@ -66,7 +66,8 @@ def main():
     files={'/':('chat.html','text/html; charset=utf-8'),'/chat.js':('chat.js','text/javascript; charset=utf-8'),
            '/i18n.js':('i18n.js','text/javascript; charset=utf-8'),'/style.css':('style.css','text/css; charset=utf-8'),
            '/mark.svg':('mark.svg','image/svg+xml'),'/companion.png':('companion.png','image/png'),
-           '/transport.js':('transport.js','text/javascript; charset=utf-8'),'/runtime.json':('runtime.json','application/json; charset=utf-8')}
+           '/transport.js':('transport.js','text/javascript; charset=utf-8'),'/runtime.json':('runtime.json','application/json; charset=utf-8'),
+           '/train.html':('train.html','text/html; charset=utf-8'),'/train.js':('train.js','text/javascript; charset=utf-8'),'/train.css':('train.css','text/css; charset=utf-8')}
     class Handler(BaseHTTPRequestHandler):
         def log_message(self,*_): pass  # Prompts and IPs are not written to logs.
         def send(self,status,value,mime='application/json; charset=utf-8'):

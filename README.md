@@ -10,6 +10,10 @@ Noah 的目标是：训练真正属于本项目的模型，让贡献者自愿提
 
 ## Quick start / 启动
 
+Public chat: <https://zenithsmart.xin/>. The **贡献算力 / Contribute compute** link opens <https://zenithsmart.xin/train.html>, which shows the actual published model metadata and clearly marks public contribution as unavailable until its coordinator is deployed. It contains no administrator controls or fabricated node counts.
+
+The owner's actual training console is <http://127.0.0.1:4317/#network>; model iteration is <http://127.0.0.1:4317/#evolve>. Run `Start.cmd` first. These links refer to the visitor's own computer. Only the local console can start this computer's voluntary training client.
+
 Windows with Python 3.12:
 
 1. Run `Setup.cmd` once to create a project-local environment and install official CPU PyTorch and NumPy.
@@ -87,7 +91,7 @@ See [REMOTE.md](REMOTE.md) for HTTPS contribution setup, [CONTRIBUTING.md](CONTR
 
 ## Domain and deployment
 
-Website: **https://zenithsmart.xin/**. The browser-local Noah app is published through the owner's Cloudflare static-assets project `noah-ai`, with a root-only route `zenithsmart.xin/*`. Its public browser bundle contains the accepted 325-step weights. The downloadable original 100-step seed remains in the repository for reproducibility. Port 4317 is the **local administrator console** and stays private. See [DEPLOYMENT.md](DEPLOYMENT.md) for deployment evidence, recovery and the optional Python gateway.
+Website: **https://zenithsmart.xin/**. The browser-local Noah app is published through the owner's Cloudflare static-assets project `noah-ai-web`, with a root-only route `zenithsmart.xin/*`. Its public browser bundle contains the accepted 325-step weights. The original `noah-ai` Worker is retained for hosting rollback. The downloadable original 100-step seed remains in the repository for reproducibility. Port 4317 is the **local administrator console** and stays private. See [DEPLOYMENT.md](DEPLOYMENT.md) for deployment evidence, recovery and the optional Python gateway.
 
 The repository remains private as requested. Visitors can run the published small model in their own browser. A globally operating volunteer training network and a capable general assistant are not claimed to exist yet.
 

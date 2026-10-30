@@ -1,5 +1,13 @@
 # Noah local verification
 
+## Training portal update (0.3.1)
+
+The public homepage now links to `/train.html`, redirected by Cloudflare to `/train`. This contributor portal reads the published step and parameter count from real model metadata and displays that the public coordinator has not been deployed. It does not report invented online nodes or expose administration controls. The owner's actual management UI now supports direct links to `#network` and `#evolve`.
+
+All 7 Node checks were rerun, including translation-key coverage for the new portal. The public Python gateway HTTP lifecycle test was rerun and passed after adding the portal's explicit static-file allowlist. Browser checks confirmed the 325-step / 644,608-parameter metadata, Arabic RTL translation, and no desktop horizontal overflow. Both the independent `noah-ai-web.xiao85651.workers.dev` origin and `zenithsmart.xin` matched the built homepage, portal HTML/JS/CSS, translations and model manifest over HTTPS. Cloudflare release `4b98ab0b` was Ready / 100%; the exact existing `zenithsmart.xin/*` route was moved to `noah-ai-web`. The prior `noah-ai` Worker remains available for rollback. This update does not constitute public volunteer-training deployment.
+
+An isolated real coordinator/browser restart check on loopback port 4322 verified the local console connection fix: the page marks cached data and disables training controls during an outage, reconnects when the service returns without starting training, and refreshes its management session after a rejected stale-token request. A post-restart start/pause action succeeded without reloading the page. No failed network mutation is automatically retried. The test used temporary data, no contributor process, and was stopped after verification. The owner's separate working checkpoint was subsequently observed at step 2085; the accepted serving release remained 325. Local runtime progress is not part of the source archive.
+
 Verified on Windows with CPU PyTorch 2.15.0+cpu, NumPy 2.3.5 and Node 24.22.1. GPU and real internet contributors were not exercised.
 
 ## Automated checks

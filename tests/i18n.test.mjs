@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {translations,locales} from '../public/i18n.js';
 test('all five languages cover static and dynamic UI keys',()=>{
- const html=['index.html','chat.html'].map(path=>readFileSync(new URL('../public/'+path,import.meta.url),'utf8')).join('\n');
- const app=['app.js','chat.js'].map(path=>readFileSync(new URL('../public/'+path,import.meta.url),'utf8')).join('\n');
+ const html=['index.html','chat.html','train.html'].map(path=>readFileSync(new URL('../public/'+path,import.meta.url),'utf8')).join('\n');
+ const app=['app.js','chat.js','train.js'].map(path=>readFileSync(new URL('../public/'+path,import.meta.url),'utf8')).join('\n');
  const required=[...html.matchAll(/data-i18n(?:-placeholder)?="([^"]+)"/g)].map(m=>m[1]);
  const dynamic=[...app.matchAll(/\bt\('([^']+)'\)/g)].map(m=>m[1]);
  assert.equal(locales.length,5);
