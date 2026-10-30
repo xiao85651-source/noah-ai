@@ -25,7 +25,7 @@ The supplied Caddy configuration proposes `chat.zenithsmart.xin` for public chat
 
 1. `Setup.cmd` installs the environment; `Check.cmd` verifies the full isolated lifecycle.
 2. `Start.cmd` opens the management service on 4317, paused by default.
-3. `PublicChat.cmd` starts the separate public preview on 4319 using the published 100-step seed. To serve an exported Noah checkpoint instead, set `NOAH_CHAT_CHECKPOINT` to its absolute local path before starting this process. Restart to select new weights; training never mutates the gateway's in-memory model.
+3. `PublicChat.cmd` starts the separate Python public preview on 4319 and follows validated accepted releases under `data/releases/`. Without an accepted release it starts from the published 100-step seed. A new accepted release is loaded on the next request; rejected candidates are not served. To use a fixed exported checkpoint instead, set `NOAH_FOLLOW_RELEASES=0` and `NOAH_CHAT_CHECKPOINT` to its absolute local path before starting the process. The static website is updated separately as described above.
 4. Use `Contribute.cmd` for a voluntary CPU client, or use the explicit-consent control in the local management UI. Stop and pause when finished.
 
 ## When a persistent server is available
