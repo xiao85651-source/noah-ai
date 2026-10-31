@@ -100,7 +100,8 @@ def make_handler(settings):
     return Handler
 
 def main():
-    settings=Settings(os.environ.get('NOAH_CLOUD_ORIGIN',''),os.environ.get('NOAH_OWNER_PASSWORD',''),
+    origin=os.environ.get('NOAH_CLOUD_ORIGIN') or os.environ.get('RENDER_EXTERNAL_URL','').rstrip('/')
+    settings=Settings(origin,os.environ.get('NOAH_OWNER_PASSWORD',''),
                       os.environ.get('NOAH_JOIN_TOKEN',''),os.environ.get('NOAH_STORAGE_MODE',''),
                       os.environ.get('NOAH_OWNER_USER','owner'),
                       int(os.environ.get('NOAH_INTERNAL_ADMIN_PORT','4317')),int(os.environ.get('NOAH_INTERNAL_NODE_PORT','4318')))

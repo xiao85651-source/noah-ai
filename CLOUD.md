@@ -30,7 +30,7 @@ Native Python build command:
 pip install torch==2.15.0 --index-url https://download.pytorch.org/whl/cpu && pip install 'numpy>=2.0,<3'
 ```
 
-Start command: `python -m training.cloud`. Select Python 3.12. Use `/healthz` as a health path where supported. The startup values must use the actual HTTPS origin, without a path or trailing slash. Keep the service on the free plan for this test; creating this configuration does not authorize purchasing an upgraded plan or disk.
+Start command: `python -m training.cloud`. Select Python 3.12. Use `/healthz` as a health path where supported. The startup values must use the actual HTTPS origin, without a path or trailing slash. On Render, `NOAH_CLOUD_ORIGIN` may be omitted initially: the server reads the actual platform-assigned `RENDER_EXTERNAL_URL`, documented in [Render's default environment variables](https://render.com/docs/environment-variables). It does not guess a hostname. Set an explicit origin before changing to a custom domain. Keep the service on the free plan for this test; creating this configuration does not authorize purchasing an upgraded plan or disk.
 
 In `ephemeral-test` mode **all POST operations, training and contributor registration are disabled**. The owner can check connection, UI and metadata, but this mode is not a substitute for persistent training. The UI displays this restriction. Render's [free-instance documentation](https://render.com/docs/free) states that free web services sleep after inactivity and do not support persistent disks. Its [disk documentation](https://render.com/docs/disks) explains the persistence requirements. Other hosts must be checked for their own terms.
 

@@ -3,6 +3,7 @@
 - **Owner/maintainer:** repository owner `xiao85651-source`.
 - **Purpose:** verify independently trained language-model weights and a voluntary compute protocol.
 - **Stage:** seed research; not an instruction-following assistant.
+- **Research direction:** biopharma, science/technology and code generation. The separate `research-v1` random-initialized experiment uses 48 original development records; after 40 CPU updates its six task probes still score 0/6. It is not a specialist model and does not replace the browser serving release. See `RESEARCH.md`.
 - **Architecture:** independently implemented conventional decoder-only causal Transformer; 644,608 parameters; 3 layers, width 128, 4 heads, context 128.
 - **Tokenizer:** 259 IDs: 256 UTF-8 bytes and BOS/EOS/PAD. Unicode text round trips without unknown-language characters at the tokenizer layer.
 - **Initialization:** random, manual seed 17. No third-party pretrained weights.
