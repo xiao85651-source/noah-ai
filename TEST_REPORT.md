@@ -1,5 +1,11 @@
 # Noah local verification
 
+## Research and cloud source update (0.4)
+
+Added the isolated `research-v1` profile (36 training, 6 validation, 6 audit records), cross-profile checkpoint protection, per-domain regression gates and six development probes. A real 40-step random-initialized CPU run reduced validation byte loss from 5.5747075876 to 4.0395072699, while task probes remained 0/6. This is a failed capability check, not a specialist-model success. The serving browser model was not replaced.
+
+The full Python suite passed 13 tests after the new profile and cloud edge were introduced. Following addition of the research probe promotion gate, all 7 research/evolution tests passed again. Checks exercise real research gradients and reload, preservation on wrong-profile loading, data separation/provenance rejection, bounded arithmetic-code execution, and an actual HTTP proxy with owner authentication, foreign-origin rejection, contributor/owner separation and disabled free-test training. Docker image building and actual cloud deployment are not verified by these tests.
+
 ## Training portal update (0.3.1)
 
 The public homepage now links to `/train.html`, redirected by Cloudflare to `/train`. This contributor portal reads the published step and parameter count from real model metadata and displays that the public coordinator has not been deployed. It does not report invented online nodes or expose administration controls. The owner's actual management UI now supports direct links to `#network` and `#evolve`.

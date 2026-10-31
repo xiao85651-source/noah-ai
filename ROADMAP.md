@@ -1,5 +1,7 @@
 # Noah roadmap
 
+The selected application direction is biopharmaceutical research, science/technology and code generation. Measure evidence quality, correct uncertainty, checked calculations and actually tested code. `research-v1` is a tiny original curriculum and pipeline experiment, not evidence of those capabilities; see `RESEARCH.md`.
+
 1. **Verified seed:** own Transformer, original multilingual seed corpus, own trained weights, CPU tests, voluntary client protocol, local control UI and reproducible checkpoints.
 2. **Trusted remote pilot:** deploy a dedicated HTTPS contributor endpoint; recruit 2–5 willing testers; measure real throughput, transfer volume, outages and validation behavior. Add revocation and task verification.
 3. **Resource controls:** operating-system resource limits, idle/power/thermal detection, explicit GPU consent, signed Windows installation and updates.

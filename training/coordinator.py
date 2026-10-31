@@ -7,6 +7,7 @@ import base64, copy, hashlib, json, math, os, random, secrets, signal, subproces
 import torch
 from .model import Config, Noah, encode, make_batch, pack_tensors, parameters, unpack_tensors, set_parameters
 from .evolution import Evolution
+from .curriculum import load_curriculum
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -15,12 +16,13 @@ class Coordinator:
         torch.set_num_threads(2)
         torch.manual_seed(17)
         self.lock = threading.RLock()
-        self.data = Path(data_dir or os.environ.get('NOAH_DATA', ROOT / 'data'))
+        self.profile = os.environ.get('NOAH_PROFILE','seed')
+        documents, self.corpus_hash = load_curriculum(self.profile)
+        default_data = ROOT/'data' if self.profile=='seed' else ROOT/'data-profiles'/self.profile
+        self.data = Path(data_dir or os.environ.get('NOAH_DATA', default_data))
         self.data.mkdir(parents=True, exist_ok=True)
         self.checkpoint = self.data / 'noah-transformer.pt'
-        source = (ROOT / 'training' / 'corpus.jsonl').read_bytes()
-        self.corpus_hash = hashlib.sha256(source).hexdigest()
-        documents = [json.loads(line) for line in source.decode('utf-8').splitlines() if line.strip()]
+        self.documents = documents
         self.train_ids = sum((encode(d['text'], True) for d in documents if d['split'] == 'train'), [])
         self.validation_docs = [encode(d['text'], True) for d in documents if d['split'] == 'validation']
         self.languages = sorted({d['language'] for d in documents})
@@ -40,7 +42,7 @@ class Coordinator:
             self.optimizer.load_state_dict(saved['optimizer'])
             self.step, self.history = saved['step'], saved.get('history', [])
             initial_loss_override=saved.get('initial_loss')
-        elif config is None and not fresh and (ROOT/'checkpoints'/'noah-seed.npz').exists():
+        elif self.profile=='seed' and config is None and not fresh and (ROOT/'checkpoints'/'noah-seed.npz').exists():
             seed=json.loads((ROOT/'checkpoints'/'noah-seed.json').read_text(encoding='utf-8'))
             raw=(ROOT/'checkpoints'/'noah-seed.npz').read_bytes()
             if seed['format']!='noah-seed-v1' or seed['corpus_hash']!=self.corpus_hash or hashlib.sha256(raw).hexdigest()!=seed['sha256']: raise ValueError('Noah seed checksum or corpus version mismatch')
@@ -74,14 +76,14 @@ class Coordinator:
         return sum(losses) / len(losses)
 
     def save(self):
-        payload = {'format':'noah-transformer-v1', 'config':asdict(self.model.config), 'weights':self.model.state_dict(), 'optimizer':self.optimizer.state_dict(), 'step':self.step, 'corpus_hash':self.corpus_hash, 'initial_loss':self.initial_loss, 'history':self.history[-300:]}
+        payload = {'format':'noah-transformer-v1', 'profile':self.profile, 'config':asdict(self.model.config), 'weights':self.model.state_dict(), 'optimizer':self.optimizer.state_dict(), 'step':self.step, 'corpus_hash':self.corpus_hash, 'initial_loss':self.initial_loss, 'history':self.history[-300:]}
         temporary = self.checkpoint.with_suffix('.tmp')
         torch.save(payload, temporary)
         temporary.replace(self.checkpoint)
         (self.data / 'model-card.json').write_text(json.dumps({'name':'Noah', 'architecture':'causal decoder-only Transformer', 'initialization':'random, seed 17; no pretrained weights', 'parameters':sum(p.numel() for p in self.model.parameters()), 'step':self.step, 'validationLoss':self.loss, 'initialValidationLoss':self.initial_loss, 'tokenizer':'UTF-8 bytes + BOS/EOS/PAD', 'dataLanguages':self.languages, 'corpusSHA256':self.corpus_hash, 'capability':'early research; multilingual encoding is not evidence of multilingual proficiency'}, ensure_ascii=False, indent=2), encoding='utf-8')
 
     def status(self):
-        return {'name':'Noah', 'scope':'local-admin', 'backend':'transformer', 'training':self.active, 'duty':self.duty, 'managedWorker':self.worker is not None and self.worker.poll() is None, 'model':{'name':'Noah', 'stage':'Seed', 'type':'causal Transformer', 'step':self.step, 'parameters':sum(p.numel() for p in self.model.parameters()), 'vocab':259, 'validationLoss':self.loss, 'initialLoss':self.initial_loss, 'trainCharacters':len(self.train_ids), 'validationCharacters':sum(map(len,self.validation_docs)), 'accepted':self.step, 'languages':self.languages}, 'nodes':[{**n, 'online':time.time()*1000-n['lastSeen']<15000} for n in self.nodes.values()], 'history':self.history[-200:], 'events':self.events, 'evolution':self.evolution.status()}
+        return {'name':'Noah', 'scope':'local-admin', 'profile':self.profile,'domains':sorted({d.get('domain','general') for d in self.documents}), 'backend':'transformer', 'training':self.active, 'duty':self.duty, 'managedWorker':self.worker is not None and self.worker.poll() is None, 'model':{'name':'Noah', 'stage':'Seed', 'type':'causal Transformer', 'step':self.step, 'parameters':sum(p.numel() for p in self.model.parameters()), 'vocab':259, 'validationLoss':self.loss, 'initialLoss':self.initial_loss, 'trainCharacters':len(self.train_ids), 'validationCharacters':sum(map(len,self.validation_docs)), 'accepted':self.step, 'languages':self.languages}, 'nodes':[{**n, 'online':time.time()*1000-n['lastSeen']<15000} for n in self.nodes.values()], 'history':self.history[-200:], 'events':self.events, 'evolution':self.evolution.status()}
 
     def stop_worker(self):
         if self.worker and self.worker.poll() is None:
@@ -249,6 +251,8 @@ def main():
             except PermissionError as error: self.send(403,{'error':str(error)})
             except Exception as error: self.send(400,{'error':str(error)})
     server=ThreadingHTTPServer(('127.0.0.1',port),Handler)
+    def stop_signal(*_): threading.Thread(target=server.shutdown,daemon=True).start()
+    signal.signal(signal.SIGTERM,stop_signal)
     stopped=threading.Event()
     def iteration_clock():
         while not stopped.wait(1):

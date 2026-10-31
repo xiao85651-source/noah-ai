@@ -15,7 +15,7 @@ def atomic_json(path,value):
 
 @torch.no_grad()
 def measure(model,documents):
-    model.eval(); losses={}
+    model.eval(); losses={}; domain_losses={}
     for doc in documents:
         ids=encode(doc['text'],True); context=min(model.config.context,len(ids)-1)
         if context<16: raise ValueError('Evaluation document too short')
@@ -24,10 +24,19 @@ def measure(model,documents):
         loss=model(x,y)[1].item()
         if not math.isfinite(loss): raise ValueError('Nonfinite evaluation')
         losses.setdefault(doc['language'],[]).append(loss)
+        if 'domain' in doc: domain_losses.setdefault(doc['domain'],[]).append(loss)
     per_language={key:sum(values)/len(values) for key,values in losses.items()}
-    return {'loss':sum(per_language.values())/len(per_language),'languages':per_language}
+    result={'loss':sum(per_language.values())/len(per_language),'languages':per_language}
+    if domain_losses: result['domains']={key:sum(values)/len(values) for key,values in domain_losses.items()}
+    return result
 
 def decision(candidate,champion):
+    if 'developmentProbes' in candidate or 'developmentProbes' in champion:
+        probes=candidate.get('developmentProbes',{})
+        if probes.get('total')!=6 or probes.get('passed')!=6:return False,'research_probe_gate'
+    for suite in ['validation','audit']:
+        if set(candidate[suite].get('domains',{})) != set(champion[suite].get('domains',{})): return False,'domain_suite_mismatch'
+        if any(loss>champion[suite]['domains'][domain]*1.03 for domain,loss in candidate[suite].get('domains',{}).items()): return False,'domain_regression'
     if set(candidate['validation']['languages'])!=set(champion['validation']['languages']): return False,'suite_mismatch'
     if set(candidate['audit']['languages'])!=set(champion['audit']['languages']): return False,'suite_mismatch'
     if not candidate['validation']['loss']<=champion['validation']['loss']*.998: return False,'no_improvement'
@@ -54,18 +63,23 @@ def read_release(folder,release_id=None):
 class Evolution:
     def __init__(self,coordinator):
         self.c=coordinator; self.folder=self.c.data/'releases'
-        source=(ROOT/'training/audit.jsonl').read_bytes()
+        source=(ROOT/'training/audit.jsonl').read_bytes() if self.c.profile=='seed' else json.dumps([r for r in self.c.documents if r['split']=='audit'],ensure_ascii=False,sort_keys=True).encode('utf-8')
         self.audit_hash=hashlib.sha256(source).hexdigest()
-        self.audit_docs=[json.loads(line) for line in source.decode('utf-8').splitlines() if line.strip()]
-        self.validation=[json.loads(line) for line in (ROOT/'training/corpus.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
-        self.validation=[doc for doc in self.validation if doc['split']=='validation']
+        self.audit_docs=[json.loads(line) for line in source.decode('utf-8').splitlines() if line.strip()] if self.c.profile=='seed' else [r for r in self.c.documents if r['split']=='audit']
+        self.validation=[doc for doc in self.c.documents if doc['split']=='validation']
         self.active=False; self.cleanup_worker=False; self.owns_worker=False; self.started=0
         self.policy={'reviewEvery':25,'maxSteps':75,'maxMinutes':30}
         self.start_step=self.last_step=self.c.step; self.reason='idle'; self.error=None
         self.records=[]
         if (self.folder/'history.json').exists(): self.records=json.loads((self.folder/'history.json').read_text(encoding='utf-8'))[-100:]
 
-    def metrics(self): return {'validation':measure(self.c.model,self.validation),'audit':measure(self.c.model,self.audit_docs)}
+    def metrics(self):
+        result={'validation':measure(self.c.model,self.validation),'audit':measure(self.c.model,self.audit_docs)}
+        if self.c.profile!='seed':
+            from .research_eval import evaluate_probes
+            probes=evaluate_probes(self.c.model)
+            result['developmentProbes']={'passed':probes['passed'],'total':probes['total'],'specialistReady':False}
+        return result
 
     def current(self):
         if not (self.folder/'current.json').exists(): return None
@@ -81,7 +95,7 @@ class Evolution:
         meta={'format':'noah-release-v1','id':release,'parent':parent,'step':self.c.step,'config':asdict(self.c.model.config),
               'sha256':hashlib.sha256(raw).hexdigest(),'corpusSHA256':self.c.corpus_hash,'auditSHA256':self.audit_hash,
               'metrics':metrics,'accepted':accepted,'reason':reason,'createdAt':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),
-              'pretrainedWeightsUsed':False,'scope':'original tiny corpus; no general capability claim'}
+              'pretrainedWeightsUsed':False,'profile':self.c.profile,'scope':'authored development curriculum; no general or specialist capability claim'}
         atomic_json(directory/'model.json',meta)
         if accepted: atomic_json(self.folder/'current.json',{'release':release})
         self.records.insert(0,{key:meta[key] for key in ['id','parent','step','accepted','reason','createdAt','metrics']})
