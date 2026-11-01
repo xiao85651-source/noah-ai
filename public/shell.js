@@ -67,7 +67,7 @@ async function prepareGoogle(dialog){
  try{
   const config=await api('/api/auth/config');if(!config.enabled||!config.clientId)throw Error('not_ready');
   const challenge=await api('/api/auth/challenge');await loadGoogle();if(!dialog.open)return;
-  globalThis.google.accounts.id.initialize({client_id:config.clientId,nonce:challenge.nonce,auto_select:false,ux_mode:'popup',use_fedcm_for_button:true,callback:async result=>{
+  globalThis.google.accounts.id.initialize({client_id:config.clientId,nonce:challenge.nonce,auto_select:false,ux_mode:'popup',use_fedcm_for_button:false,callback:async result=>{
    if(!dialog.open)return;status.textContent=t('checking');
    try{
     const session=await api('/api/auth/google',{body:{credential:result.credential,nonce:challenge.nonce}});
