@@ -1,0 +1,11 @@
+name = "noah-compute"
+main = "compute-entry.mjs"
+compatibility_date = "2026-11-01"
+workers_dev = true
+
+[[routes]]
+pattern = "compute.zenithsmart.xin"
+custom_domain = true
+
+[observability]
+enabled = false
