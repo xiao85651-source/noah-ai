@@ -12,7 +12,9 @@ Noah 的目标是：训练真正属于本项目的模型，让贡献者自愿提
 
 The owner's current research target is **biopharma, science/technology and code generation**. Run `Research.cmd` for the independent `research-v1` training profile on port 4323. Its first 40-step experiment still failed all six development capability probes; it is not a specialist assistant. See [RESEARCH.md](RESEARCH.md) for data, actual results and promotion gates, and [CLOUD.md](CLOUD.md) for owner-authenticated online deployment and free-test restrictions.
 
-Public chat: <https://zenithsmart.xin/>. The **贡献算力 / Contribute compute** link opens <https://zenithsmart.xin/train.html>, which shows the actual published model metadata and clearly marks public contribution as unavailable until its coordinator is deployed. It contains no administrator controls or fabricated node counts.
+Public chat: <https://zenithsmart.xin/>. The **贡献算力 / Contribute compute** link opens <https://zenithsmart.xin/train.html>, which shows the actual published model metadata. The coordinator is online at <https://noah-research-test.dockhosting.dev> in free, read-only `ephemeral-test` mode; public training remains disabled pending persistent storage. The public page contains no administrator controls or fabricated node counts.
+
+Version 0.5 adds Google member sign-in and a replayable Ark introduction. See [AUTH.md](AUTH.md) for configuration, session lifetime, privacy and the separation between public members and training administrators. Member sign-in does not imply reliable model capabilities or enable cloud training.
 
 The owner's actual training console is <http://127.0.0.1:4317/#network>; model iteration is <http://127.0.0.1:4317/#evolve>. Run `Start.cmd` first. These links refer to the visitor's own computer. Only the local console can start this computer's voluntary training client.
 

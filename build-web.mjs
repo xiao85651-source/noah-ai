@@ -4,7 +4,8 @@ const directory=new URL('./dist/',import.meta.url);await mkdir(directory,{recurs
 const manifest=JSON.parse(await readFile(new URL('./checkpoints/noah-web.json',import.meta.url),'utf8'));
 const binary=await readFile(new URL('./checkpoints/noah-web.bin',import.meta.url));
 if(createHash('sha256').update(binary).digest('hex')!==manifest.sha256)throw Error('Web model checksum mismatch');
-for(const file of ['chat.html','chat.js','transport.js','inference-worker.js','browser-model.js','i18n.js','style.css','mark.svg','companion.png','train.html','train.js','train.css'])await copyFile(new URL('./public/'+file,import.meta.url),new URL(file==='chat.html'?'index.html':file,directory));
+for(const file of ['chat.html','chat.js','transport.js','inference-worker.js','browser-model.js','i18n.js','style.css','mark.svg','companion.png','train.html','train.js','train.css','shell.js','shell.css','auth-config.json','privacy.html','privacy.css'])await copyFile(new URL('./public/'+file,import.meta.url),new URL(file==='chat.html'?'index.html':file,directory));
+await writeFile(new URL('_headers',directory),"/*\n  Cross-Origin-Opener-Policy: same-origin-allow-popups\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Content-Type-Options: nosniff\n");
 for(const file of ['noah-web.bin','noah-web.json'])await copyFile(new URL('./checkpoints/'+file,import.meta.url),new URL(file,directory));
 await writeFile(new URL('runtime.json',directory),JSON.stringify({mode:'browser',modelStep:manifest.step}));
 console.log(`Noah browser build ready: own ${manifest.parameters} parameters, published step ${manifest.step}`);

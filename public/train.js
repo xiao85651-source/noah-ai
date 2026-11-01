@@ -1,4 +1,6 @@
 import {translations,locales} from './i18n.js';
+import {startNoahShell} from './shell.js';
+startNoahShell({signIn:true});
 const $=selector=>document.querySelector(selector);
 let language='zh',metadata=null,failed=false;
 try{language=localStorage.getItem('noah-language')||'zh';}catch{}

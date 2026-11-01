@@ -1,4 +1,6 @@
 import {translations,locales} from './i18n.js';
+import {startNoahShell} from './shell.js';
+startNoahShell();
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 let token='',state=null,conversation=[],busy=false,currentView='chat',language='zh';
 let connected=true,refreshing=false;

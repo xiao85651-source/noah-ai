@@ -1,5 +1,7 @@
 import {translations,locales} from './i18n.js';
 import {infer} from './transport.js';
+import {startNoahShell} from './shell.js';
+startNoahShell({signIn:true});
 const $=s=>document.querySelector(s);
 let language='zh',busy=false,paused=false;
 try{language=localStorage.getItem('noah-language')||'zh';paused=localStorage.getItem('noah-companion-paused')==='1';}catch{}

@@ -14,6 +14,7 @@ import time
 from urllib.error import HTTPError
 from urllib.parse import urlsplit
 from urllib.request import Request, urlopen
+from training.google_login import AUTH_PATHS, PUBLIC_ORIGINS, GoogleLogin
 
 NODE_PATHS={'/api/nodes/join','/api/nodes/leave','/api/tasks/next','/api/tasks/result'}
 
@@ -26,6 +27,8 @@ class Settings:
     user: str='owner'
     admin_port: int=4317
     node_port: int=4318
+    google_client_id: str=''
+    auth_origins: tuple=()
 
     def validate(self):
         parsed=urlsplit(self.origin)
@@ -47,20 +50,53 @@ def owner_authorized(header,settings):
         return hmac.compare_digest(user.encode(),settings.user.encode()) and hmac.compare_digest(password.encode(),settings.password.encode())
     except (ValueError,UnicodeError): return False
 
-def make_handler(settings):
+def make_handler(settings,google_login=None):
     settings.validate()
+    identity=google_login or GoogleLogin(settings.google_client_id)
+    public_origins=set(settings.auth_origins or PUBLIC_ORIGINS)|{settings.origin}
     class Handler(BaseHTTPRequestHandler):
         def log_message(self,*_): pass
-        def send(self,status,body,mime='application/json; charset=utf-8'):
+        def send(self,status,body,mime='application/json; charset=utf-8',headers=None,owner_challenge=True):
             raw=body if isinstance(body,bytes) else json.dumps(body,ensure_ascii=False).encode('utf-8')
             self.send_response(status);self.send_header('Content-Type',mime)
             self.send_header('Content-Length',str(len(raw)));self.send_header('Cache-Control','no-store')
             self.send_header('X-Content-Type-Options','nosniff')
             self.send_header('Content-Security-Policy',"default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; frame-ancestors 'none'")
-            if status==401:self.send_header('WWW-Authenticate','Basic realm="Noah owner", charset="UTF-8"')
+            if status==401 and owner_challenge:self.send_header('WWW-Authenticate','Basic realm="Noah owner", charset="UTF-8"')
+            for key,value in (headers or {}).items():self.send_header(key,value)
             self.end_headers();self.wfile.write(raw)
+        def public_auth(self,path):
+            origin=self.headers.get('Origin')
+            cors={'Vary':'Origin'}
+            if origin in public_origins:
+                cors.update({'Access-Control-Allow-Origin':origin,'Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Allow-Headers':'Content-Type, Authorization','Access-Control-Max-Age':'600'})
+            def answer(status,body):return self.send(status,body,headers=cors,owner_challenge=False)
+            if (origin is not None and origin not in public_origins) or (self.command in {'POST','OPTIONS'} and origin not in public_origins):
+                return answer(403,{'error':'invalid_origin'})
+            if self.command=='OPTIONS':return answer(204,b'')
+            if self.command=='GET':
+                if path=='/api/auth/config':return answer(200,{'enabled':identity.enabled,'clientId':identity.client_id,'provider':'google'})
+                if path=='/api/auth/challenge':return answer(*identity.challenge())
+                if path=='/api/auth/me':return answer(*identity.me(self.headers.get('Authorization')))
+                return answer(405,{'error':'method_not_allowed'})
+            if self.command!='POST' or path not in {'/api/auth/google','/api/auth/logout'}:
+                return answer(405,{'error':'method_not_allowed'})
+            try:
+                length=int(self.headers.get('Content-Length','0'))
+                if not 0<length<=18000:return answer(413,{'error':'request_too_large'})
+                if self.headers.get('Content-Type','').split(';')[0].strip()!='application/json':
+                    return answer(415,{'error':'json_required'})
+                self.connection.settimeout(15)
+                body=json.loads(self.rfile.read(length))
+                if not isinstance(body,dict):return answer(400,{'error':'invalid_request'})
+            except (ValueError,OSError):return answer(400,{'error':'invalid_request'})
+            if path=='/api/auth/google':return answer(*identity.login(body))
+            identity.logout(self.headers.get('Authorization'))
+            return answer(204,b'')
         def relay(self):
             try:
+                path=urlsplit(self.path).path
+                if path in AUTH_PATHS:return self.public_auth(path)
                 body=None
                 if self.command=='POST':
                     length=int(self.headers.get('Content-Length','0'))
@@ -97,6 +133,10 @@ def make_handler(settings):
             except OSError: self.send(503,{'error':'Coordinator unavailable'})
         do_GET=relay
         do_POST=relay
+        def do_OPTIONS(self):
+            path=urlsplit(self.path).path
+            if path in AUTH_PATHS:return self.public_auth(path)
+            self.send(403,{'error':'Origin not allowed'})
     return Handler
 
 def main():
@@ -104,7 +144,9 @@ def main():
     settings=Settings(origin,os.environ.get('NOAH_OWNER_PASSWORD',''),
                       os.environ.get('NOAH_JOIN_TOKEN',''),os.environ.get('NOAH_STORAGE_MODE',''),
                       os.environ.get('NOAH_OWNER_USER','owner'),
-                      int(os.environ.get('NOAH_INTERNAL_ADMIN_PORT','4317')),int(os.environ.get('NOAH_INTERNAL_NODE_PORT','4318')))
+                      int(os.environ.get('NOAH_INTERNAL_ADMIN_PORT','4317')),int(os.environ.get('NOAH_INTERNAL_NODE_PORT','4318')),
+                      os.environ.get('NOAH_GOOGLE_CLIENT_ID','').strip(),
+                      tuple(value.strip() for value in os.environ.get('NOAH_AUTH_ORIGINS','').split(',') if value.strip()))
     settings.validate()
     root=Path(__file__).resolve().parents[1]
     data=Path(os.environ.get('NOAH_DATA','/var/data/noah'))
