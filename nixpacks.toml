@@ -1,0 +1,15 @@
+# The web build also has package.json; the cloud service runs Python.
+providers = ["python"]
+
+[phases.setup]
+aptPkgs = ["curl", "libgomp1", "ca-certificates"]
+
+[phases.install]
+cmds = ["python -m venv --copies /opt/venv && /opt/venv/bin/python -m pip install --no-cache-dir torch==2.15.0 --index-url https://download.pytorch.org/whl/cpu && /opt/venv/bin/python -m pip install --no-cache-dir -r requirements.txt"]
+paths = ["/opt/venv/bin"]
+
+[phases.build]
+cmds = []
+
+[start]
+cmd = "/opt/venv/bin/python -m training.cloud"
