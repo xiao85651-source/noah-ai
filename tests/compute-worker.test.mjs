@@ -12,6 +12,9 @@ test('gateway keeps credentials on the fixed origin and strips cookies and spoof
     called++;
     assert.equal(new URL(url).origin, UPSTREAM);
     assert.equal(options.redirect, 'manual');
+    assert.equal(options.cache, 'no-store');
+    // Regression: Workers throws when cacheTtl accompanies no-store.
+    assert.equal(options.cf?.cacheTtl, undefined);
     assert.equal(options.headers.get('Authorization'), 'Basic test-only');
     assert.equal(options.headers.get('Origin'), UPSTREAM);
     assert.equal(options.headers.get('X-Noah-Token'), 'test-session');

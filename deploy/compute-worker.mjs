@@ -47,8 +47,8 @@ export async function handle(request, fetchOrigin = fetch) {
   try {
     upstream = await fetchOrigin(target.href, {
       method: request.method === 'HEAD' ? 'GET' : request.method, headers, body,
-      redirect: 'manual', cache: 'no-store', signal: AbortSignal.timeout(65000),
-      cf: {cacheTtl: 0, cacheEverything: false}
+      // Workers rejects cf.cacheTtl together with the stronger no-store mode.
+      redirect: 'manual', cache: 'no-store', signal: AbortSignal.timeout(65000)
     });
   } catch { return failure(503, 'coordinator_unavailable'); }
   // Never forward credentials along a provider-controlled redirect chain.

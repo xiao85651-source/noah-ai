@@ -1,0 +1,14 @@
+name = "noah-ai-web"
+compatibility_date = "2026-11-01"
+workers_dev = true
+preview_urls = false
+
+[[routes]]
+pattern = "zenithsmart.xin/*"
+zone_name = "zenithsmart.xin"
+
+[assets]
+directory = "../dist"
+
+[observability]
+enabled = false
