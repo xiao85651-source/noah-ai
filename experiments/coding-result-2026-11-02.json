@@ -1,0 +1,371 @@
+{
+  "sourceStep": 413,
+  "stepsAdded": 600,
+  "elapsedAfterBaselineSeconds": 51.4,
+  "before": {
+    "validation": {
+      "passed": 0,
+      "total": 16,
+      "responseLoss": 3.3289318084716797,
+      "results": [
+        {
+          "id": "validation-0-add",
+          "output": "And s d s s d d d e s  d d d d an d a d d e e e d de e d de de e",
+          "passed": false
+        },
+        {
+          "id": "validation-0-subtract",
+          "output": "And s s s at and d s s s de an atis an and d d an an s an e e e ",
+          "passed": false
+        },
+        {
+          "id": "validation-0-multiply",
+          "output": "And s s s at and d s s s de an an and s s an d an an s and e e e",
+          "passed": false
+        },
+        {
+          "id": "validation-0-divide",
+          "output": "And s d s d and nd   nd d nde an an e an d e d d an e d e e e e ",
+          "passed": false
+        },
+        {
+          "id": "validation-1-add",
+          "output": "And d d  d d nd d d e d  nd nd nde e nd d nd e de d de e e de de",
+          "passed": false
+        },
+        {
+          "id": "validation-1-subtract",
+          "output": "And s s s s s nd s d nd d nde an an d n nd e d de e d de d n e e",
+          "passed": false
+        },
+        {
+          "id": "validation-1-multiply",
+          "output": "And s s s s s nd s d nd d nde an and nd nd e d de e e nd de e e ",
+          "passed": false
+        },
+        {
+          "id": "validation-1-divide",
+          "output": "And d d d nd d d nd n  nd d nde e nd  e n nd e d de e e de d n e",
+          "passed": false
+        },
+        {
+          "id": "validation-2-add",
+          "output": "And s s s s s s s d s ande s s s d atis atis an an an s an s de ",
+          "passed": false
+        },
+        {
+          "id": "validation-2-subtract",
+          "output": "And s s s s s s s s a s d d nde an atis an d s d de d d de de e ",
+          "passed": false
+        },
+        {
+          "id": "validation-2-multiply",
+          "output": "And s s s s s s s s an s s tis s and d nd s s nd de an and and e",
+          "passed": false
+        },
+        {
+          "id": "validation-2-divide",
+          "output": "And s s s s s s and s a s and d an an s and s s an de e an s an ",
+          "passed": false
+        },
+        {
+          "id": "validation-3-add",
+          "output": "And  and and and nd  nd nd nde e nd d nd e d nd d an e d e e e e",
+          "passed": false
+        },
+        {
+          "id": "validation-3-subtract",
+          "output": "And d and d nd   nd d nde an and nd e d nd  e e e d e an e  e  e",
+          "passed": false
+        },
+        {
+          "id": "validation-3-multiply",
+          "output": "And and and nd  nd nd nd  and d e nd e e d d and e e d d e  e  e",
+          "passed": false
+        },
+        {
+          "id": "validation-3-divide",
+          "output": "And d nd d and an nd nd nd  an and nd e d nd d an e e e e e e  e",
+          "passed": false
+        }
+      ]
+    },
+    "audit": {
+      "passed": 0,
+      "total": 16,
+      "responseLoss": 3.3123912811279297,
+      "results": [
+        {
+          "id": "audit-0-add",
+          "output": "And s s d d and d nd d nde an an e an d e d d an e d e an e e  e",
+          "passed": false
+        },
+        {
+          "id": "audit-0-subtract",
+          "output": "And s d nd   nd d nd  an and nd d d nd  e e d d d e  e   e  e e ",
+          "passed": false
+        },
+        {
+          "id": "audit-0-multiply",
+          "output": "And s d nd  nd s s de an and nd d d nd d an d d e an e  e e e e ",
+          "passed": false
+        },
+        {
+          "id": "audit-0-divide",
+          "output": "And s s d nd d nd d nde an and nd e s nd d an e d e e e e e e e ",
+          "passed": false
+        },
+        {
+          "id": "audit-1-add",
+          "output": "And e d s  s d s e e de s e nd d nde e nd d nd e s nde e e e de ",
+          "passed": false
+        },
+        {
+          "id": "audit-1-subtract",
+          "output": "And d d d nd d d nd e  nd d   and  e  d n  d e d  e e d d e e  e",
+          "passed": false
+        },
+        {
+          "id": "audit-1-multiply",
+          "output": "And d d d nd d d nd e  nd d nde e  e  e nd d e d  e e d d e e e ",
+          "passed": false
+        },
+        {
+          "id": "audit-1-divide",
+          "output": "And d d e d nd d e e s  nd nd nde e nd e nd e e nd d an e d e e ",
+          "passed": false
+        },
+        {
+          "id": "audit-2-add",
+          "output": "And s  d  s  d d d    d e s   nd d   a a  a  d de d e de e e de ",
+          "passed": false
+        },
+        {
+          "id": "audit-2-subtract",
+          "output": "And s s atis and and s and and de an atis an and d d an and an d",
+          "passed": false
+        },
+        {
+          "id": "audit-2-multiply",
+          "output": "And s s and s and s and s and and an atis an and d d an and an d",
+          "passed": false
+        },
+        {
+          "id": "audit-2-divide",
+          "output": "And d  s  s d s an and s   s s s de an and d and e de an e and d",
+          "passed": false
+        },
+        {
+          "id": "audit-3-add",
+          "output": "And s s s s at and d s s s de an atis an and d d an an s an a e ",
+          "passed": false
+        },
+        {
+          "id": "audit-3-subtract",
+          "output": "And s d s and  s d d nde an and nd d s nd d an d d d e  e e e  e",
+          "passed": false
+        },
+        {
+          "id": "audit-3-multiply",
+          "output": "And s d s and d s s s de an and nd s s nd d an d d d an e e e e ",
+          "passed": false
+        },
+        {
+          "id": "audit-3-divide",
+          "output": "And s and and s and and d d and d nd e s nd d an and e an e e  e",
+          "passed": false
+        }
+      ]
+    }
+  },
+  "after": {
+    "validation": {
+      "passed": 9,
+      "total": 16,
+      "responseLoss": 0.19488105177879333,
+      "results": [
+        {
+          "id": "validation-0-add",
+          "output": "def solve(a,b):\n    return a + b\n",
+          "passed": true
+        },
+        {
+          "id": "validation-0-subtract",
+          "output": "def solve(a,b):\n     return a - b\n",
+          "passed": true
+        },
+        {
+          "id": "validation-0-multiply",
+          "output": "def solve(a,b):\n     return a * b\n",
+          "passed": true
+        },
+        {
+          "id": "validation-0-divide",
+          "output": "def solve(a,b):\n    return a + b\n",
+          "passed": false
+        },
+        {
+          "id": "validation-1-add",
+          "output": "def solve(a,b):\n    return a + b\n",
+          "passed": true
+        },
+        {
+          "id": "validation-1-subtract",
+          "output": "def solve(a,b):\n    return a - b\n",
+          "passed": true
+        },
+        {
+          "id": "validation-1-multiply",
+          "output": "def solve(a,b):\n    return a * b\n",
+          "passed": true
+        },
+        {
+          "id": "validation-1-divide",
+          "output": "def solve(a,b):\n    return a - b\n",
+          "passed": false
+        },
+        {
+          "id": "validation-2-add",
+          "output": "def solve(a,b):\n    return a + b\n",
+          "passed": true
+        },
+        {
+          "id": "validation-2-subtract",
+          "output": "def solve(a,b):\n    return a - b\n",
+          "passed": true
+        },
+        {
+          "id": "validation-2-multiply",
+          "output": "def solve(a,b):\n    return a * b\n",
+          "passed": true
+        },
+        {
+          "id": "validation-2-divide",
+          "output": "def solve(a,b):\n    return a + b\n",
+          "passed": false
+        },
+        {
+          "id": "validation-3-add",
+          "output": "def solve(a b):\n    return a b\n",
+          "passed": false
+        },
+        {
+          "id": "validation-3-subtract",
+          "output": " solve(a b):\n    rn a - b\n",
+          "passed": false
+        },
+        {
+          "id": "validation-3-multiply",
+          "output": " solve(a b):\n    * b\n",
+          "passed": false
+        },
+        {
+          "id": "validation-3-divide",
+          "output": "def solve(a solve(a b\n",
+          "passed": false
+        }
+      ]
+    },
+    "audit": {
+      "passed": 5,
+      "total": 16,
+      "responseLoss": 0.12743458151817322,
+      "results": [
+        {
+          "id": "audit-0-add",
+          "output": "def solve(a,b):\n    return a / b\n",
+          "passed": false
+        },
+        {
+          "id": "audit-0-subtract",
+          "output": "def solve(a,b\nde(a,b\nde(a solve(a,b):\n       return a - b\n",
+          "passed": false
+        },
+        {
+          "id": "audit-0-multiply",
+          "output": "def solve(a,b\nde(a,b\n",
+          "passed": false
+        },
+        {
+          "id": "audit-0-divide",
+          "output": "de(a,b):\n    return a / b\n",
+          "passed": false
+        },
+        {
+          "id": "audit-1-add",
+          "output": "def solve(a,b):\n    return a / b\n",
+          "passed": false
+        },
+        {
+          "id": "audit-1-subtract",
+          "output": "def solve(a,b):\n    rn a + b\n",
+          "passed": false
+        },
+        {
+          "id": "audit-1-multiply",
+          "output": "def solve(a,b):\n    rn a * b\n",
+          "passed": false
+        },
+        {
+          "id": "audit-1-divide",
+          "output": "def solve(a,b):\n    return a / b\n",
+          "passed": true
+        },
+        {
+          "id": "audit-2-add",
+          "output": "def solveturn solve(a a / b):\n",
+          "passed": false
+        },
+        {
+          "id": "audit-2-subtract",
+          "output": "def solve(a (a return - b\n",
+          "passed": false
+        },
+        {
+          "id": "audit-2-multiply",
+          "output": "def solve(a solve(a * b\n",
+          "passed": false
+        },
+        {
+          "id": "audit-2-divide",
+          "output": "def solve(a solve(a solve(a / b\n",
+          "passed": false
+        },
+        {
+          "id": "audit-3-add",
+          "output": "def solve(a,b):\n    return a + b\n",
+          "passed": true
+        },
+        {
+          "id": "audit-3-subtract",
+          "output": "def solve(a,b):\n    return a - b\n",
+          "passed": true
+        },
+        {
+          "id": "audit-3-multiply",
+          "output": "def solve(a,b):\n    return a * b\n",
+          "passed": true
+        },
+        {
+          "id": "audit-3-divide",
+          "output": "def solve(a,b):\n    return a / b\n",
+          "passed": true
+        }
+      ]
+    }
+  },
+  "restoreVerified": true,
+  "narrowExperimentGatePassed": false,
+  "generalAssistantReleaseEligible": false,
+  "halfAssistantCapabilityMeasured": false,
+  "websiteModelChanged": false,
+  "policy": {
+    "maxSteps": 600,
+    "maxSeconds": 300,
+    "seed": 2041,
+    "batchSize": 8,
+    "learningRate": 0.0004,
+    "releaseGate": "All 16 validation and all 16 audit prompts pass functional tests; at most a narrow experiment release",
+    "scope": "Same four operations across disjoint prompt templates; synthetic wording generalization only, not unseen task families"
+  }
+}
